@@ -6,14 +6,14 @@ class ItemsController < ApplicationController
       user = find_user
       items = user.items
     else
-      items = Item.all 
-    end 
+      items = Item.all
+    end
     render json: items, include: :user
   end
   
   def show
-    item = find_item
-    render json: item 
+    item = Item.find(params[:id])
+    render json: item
   end
 
   def create
@@ -24,20 +24,16 @@ class ItemsController < ApplicationController
 
   private
 
-  def find_item
-    Item.find(params[:id])
-  end
-
   def find_user
     User.find(params[:user_id])
   end
-
+ 
+  def render_not_found_response
+    render json: { error: "User not found" }, status: :not_found
+  end
+  
   def item_params
     params.permit(:name, :description, :price)
-  end
-
-  def render_not_found_response(exception)
-    render json: { error: "#{exception.model} not found" }, status: :not_found 
   end
 
 end
